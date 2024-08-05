@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from model import NeuralNet
 from torch.utils.data import Dataset, DataLoader
-from nltk_utils import tokenize, stem, bag_of_words
+from nltk_utils_lib.nltk_utils import tokenize, stem, bag_of_words
 with open('intents.json', 'r') as f:
     intents = json.load(f)
 

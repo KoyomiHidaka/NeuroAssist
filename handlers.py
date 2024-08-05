@@ -9,18 +9,18 @@ import random
 from aiogram.types import Message
 import json
 import torch
-from Model.model import NeuralNet
-from Model.nltk_utils import bag_of_words, tokenize
+from model import NeuralNet
+from nltk_utils import bag_of_words, tokenize
 import webbrowser, subprocess, os
 
 async def echo(message: Message):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    with open('Model/intents.json', 'r') as f:
+    with open('intents.json', 'r', encoding='utf-8') as f:
         intents = json.load(f)
 
     bot_name = "T"
-    FILE = "Model/data.pth"
+    FILE = "data.pth"
 
     data = torch.load(FILE, weights_only=True)
 

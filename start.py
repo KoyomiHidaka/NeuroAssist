@@ -1,7 +1,7 @@
 import logging
 import asyncio
 from aiogram import Dispatcher, Bot
-from functions import handlers
+import handlers
 dp = Dispatcher()
 from config_reader import config
 handlers.reg_handler(dp)

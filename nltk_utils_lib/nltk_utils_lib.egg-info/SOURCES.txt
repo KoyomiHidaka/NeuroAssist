@@ -1,8 +1,0 @@
-LICENSE
-README.md
-setup.py
-nltk_utils_lib.egg-info/PKG-INFO
-nltk_utils_lib.egg-info/SOURCES.txt
-nltk_utils_lib.egg-info/dependency_links.txt
-nltk_utils_lib.egg-info/requires.txt
-nltk_utils_lib.egg-info/top_level.txt

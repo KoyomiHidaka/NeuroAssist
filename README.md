@@ -20,7 +20,6 @@ Neuro Assist Bot is an AI-powered Telegram bot built using PyTorch and Aiogram. 
    ```bash
    git clone https://github.com/yourusername/neuro-assist-bot.git
    cd neuro-assist-bot
-   
 2. **Set up the environment**:
    
    ```bash
@@ -35,10 +34,6 @@ Neuro Assist Bot is an AI-powered Telegram bot built using PyTorch and Aiogram. 
 
     ```bash
     BOT_TOKEN=your_telegram_bot_token
-
 5. **Run the bot**:
    ```bash
    python start.py
-
-
-   

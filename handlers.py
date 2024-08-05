@@ -1,17 +1,14 @@
-from aiogram import Dispatcher, types, F, Router
-from aiogram.filters import Command, CommandStart
-from aiogram.types import Message
-dp = Dispatcher()
-from aiogram import F
-from aiogram.filters import CommandStart, Command
-from aiogram.types import Message
+from aiogram import Dispatcher
 import random
 from aiogram.types import Message
 import json
 import torch
+import pyautogui
 from model import NeuralNet
 from nltk_utils import bag_of_words, tokenize
-import webbrowser, subprocess, os
+import subprocess, os, psutil
+dp = Dispatcher()
+
 
 async def echo(message: Message):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -45,7 +42,6 @@ async def echo(message: Message):
     _, predicted = torch.max(output, dim=1)
     tag = tags[predicted.item()]
 
-
     probs = torch.softmax(output, dim=1)
     prob = probs[0][predicted.item()]
 
@@ -56,10 +52,58 @@ async def echo(message: Message):
                 if tag == "anime":
                     await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
                     url = 'https://jut.su/'
+                    url1 = 'https://aniu.ru/'
                     os.system(f'start {url}')
+                    os.system(f'start {url1}')
 
-    else:
+                if tag == "launchgenshin":
+                    await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
+                    path_to_exe = r"Q:\Genshin Impact\Genshin Impact game\GenshinImpact.exe"
+                    # Запуск исполняемого файла
+                    subprocess.run([path_to_exe])
+                if tag == "closegenshin":
+                    await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
+                    await message.answer(f'{bot_name}: А нет не смогу, давай сам')
+                if tag == "launchzzz":
+                    await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
+                    path_to_exe = r"V:\ZenlessZoneZero Game\ZenlessZoneZero.exe"
+                    # Запуск исполняемого файла
+                    subprocess.run([path_to_exe])
+                if tag == "closezzz":
+                    await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
+                    await message.answer(f'{bot_name}: А нет не смогу, давай сам')
+                if tag == "spotify":
+                    await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
+                    path_to_exe = r"C:\Users\fgrls\AppData\Local\Microsoft\WindowsApps\Spotify.exe"
+                    # Запуск исполняемого файла
+                    subprocess.run([path_to_exe])
+                if tag == "closespotify":
+                    await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
+                    process_name = 'Spotify.exe'
+
+                    # Завершение процесса
+                    subprocess.run(['taskkill', '/F', '/IM', process_name])
+                    
+                    
+                   
+                    
+                    
+                    
+                    
+
+
+
+
+
+
+
+                else:
+                    await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
+    if prob.item() < 0.75:
         await message.answer(f'{bot_name}: Не понимаю..............')
+
+
+
 
 #-----------------------------------------------------------------------------------------------------------------------------------------
 def reg_handler(dp):

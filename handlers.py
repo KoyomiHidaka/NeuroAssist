@@ -141,8 +141,7 @@ async def echo(message: Message):
 
 
 
-    #else:
-        #await message.answer(f'{bot_name}: Не могу понять что ты хочешь от меня')
+    
 
          
     else:
@@ -153,6 +152,7 @@ async def echo(message: Message):
                     await message.answer(f'{bot_name}: {random.choice(intent_responses)}')
                 
               # Прерываем цикл после обработки нужного тега
+    
       
     
         

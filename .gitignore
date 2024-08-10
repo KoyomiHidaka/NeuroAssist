@@ -3,3 +3,4 @@ dist/
 .env
 __pycache__/
 bert_intent_classifier.pth
+.idea/

@@ -2,111 +2,71 @@ import json
 import numpy as np
 import torch
 import torch.nn as nn
-from model import NeuralNet
-from torch.utils.data import Dataset, DataLoader
-from nltk_utils import tokenize, stem, bag_of_words
-with open('intents.json', 'r', encoding='utf-8' ) as f:
+from torch.utils.data import DataLoader, TensorDataset
+import torch.optim as optim
+from sklearn.preprocessing import LabelEncoder
+from transformers import BertTokenizer
+from model import BERTIntentClassifier  # Импортируем модель
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# Загрузка данных
+with open('intents.json', 'r') as f:
     intents = json.load(f)
 
-all_words = []
+sentences = []
 tags = []
-xy = []
 
 for intent in intents['intents']:
-    tag = intent['tag']
-    tags.append(tag)
     for pattern in intent['patterns']:
-        w = tokenize(pattern)
-        all_words.extend(w)
-        xy.append((w, tag))
+        sentences.append(pattern)
+        tags.append(intent['tag'])
 
+# Инициализация BERT токенайзера и модели
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
-ignore_words = ['?', '!', '.', ',']
-all_words = [stem(w) for w in all_words if w not in ignore_words]
-all_words = sorted(set(all_words))
-tags = sorted(set(tags))
-print(tags)
+# Закодируем теги (intents)
+label_encoder = LabelEncoder()
+labels = label_encoder.fit_transform(tags)
+num_labels = len(label_encoder.classes_)
 
-X_train = []
-y_train = []
-for (pattern_sentence, tag) in xy:
-    bag = bag_of_words(pattern_sentence, all_words)
-    X_train.append(bag)
+model = BERTIntentClassifier(num_labels)  # Создаем модель с количеством меток
+model.to(device)
 
-    label = tags.index(tag)
-    y_train.append(label)
+# Пример кодирования с использованием BERT токенайзера
+encoded_inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
 
+input_ids = encoded_inputs['input_ids']
+attention_mask = encoded_inputs['attention_mask']
+labels = torch.tensor(labels)
 
-X_train = np.array(X_train)
-y_train = np.array(y_train)
+dataset = TensorDataset(input_ids, attention_mask, labels)
+train_loader = DataLoader(dataset, batch_size=8, shuffle=True)
 
-class ChatDataset(Dataset):
-    def __init__(self):
-        self.n_samples = len(X_train)
-        self.x_data = X_train
-        self.y_data = y_train
-
-    def __getitem__(self, index):
-        return self.x_data[index], self.y_data[index]
-
-    def __len__(self):
-        return self.n_samples
-
-
-# Hyperparameters
-epochs = 1000
-batch_size = 8
-learning_rate = 0.001
-input_size = len(X_train[0])
-hidden_size = 8
-output_size = len(tags)
-
-
-
-dataset = ChatDataset()
-train_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True, num_workers=0) #на пк попробуй  запуститьс нулем? на мак так запустилось а на пк мы делали с 2
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = NeuralNet(input_size, hidden_size, output_size).to(device)
-
-
-#Loss and optimizer
-
+optimizer = optim.Adam(model.parameters(), lr=2e-5)
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+epochs = 1000
+model.train()
 
 for epoch in range(epochs):
-    for (words, labels) in train_loader:
-        words = words.to(device)
-        labels = labels.to(dtype=torch.long).to(device)
+    total_loss = 0
+    for batch in train_loader:
+        input_ids, attention_mask, labels = [item.to(device) for item in batch]
         
-        # Forward pass
-        outputs = model(words)
-        # if y would be one-hot, we must apply
-        # labels = torch.max(labels, 1)[1]
-        loss = criterion(outputs, labels)
-        
-        # Backward and optimize
         optimizer.zero_grad()
+        outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+        logits = outputs
+        loss = criterion(logits, labels)
+        
         loss.backward()
         optimizer.step()
         
-    if (epoch+1) % 100 == 0:
-        print (f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
+        total_loss += loss.item()
+    
+    avg_loss = total_loss / len(train_loader)
+    print(f'Epochs {epoch+1}/{epochs}, Loss: {avg_loss:.4f}')
 
-
-print(f'final loss: {loss.item():.4f}')
-
-
-data = {
-    "model_state": model.state_dict(),
-    "input_size": input_size,
-    "output_size": output_size,
-    "hidden_size": hidden_size,
-    "all_words": all_words,
-    "tags": tags
-}
-
-FILE = "data.pth"
-torch.save(data, FILE)
-
-print(f'Training Complete, file saved to {FILE}')
+# Сохранение модели и меток
+torch.save({
+    'model_state_dict': model.state_dict(),
+    'label_encoder': label_encoder
+}, 'bert_intent_classifier.pth')

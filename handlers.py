@@ -35,7 +35,7 @@ with open('intents.json', 'r', encoding='utf-8') as f:
     intents = json.load(f)
 
 dp = Dispatcher()
-
+bot_name = "T"
 
 async def echo(message: Message):
     def predict_intent(text):
@@ -47,7 +47,6 @@ async def echo(message: Message):
         return intent
 
     # Общение с ботом
-    bot_name = "T"
     sentence = message.text
     intent_tag = predict_intent(sentence)  # Получаем тег намерения
 
@@ -70,7 +69,8 @@ async def echo(message: Message):
                 intent_responses = intent.get('responses', [])  # Получаем список ответов
                 if intent_responses:
                     await message.answer(f'{bot_name}: {random.choice(intent_responses)}')
-                    path_to_exe = r"Q:\Genshin Impact\Genshin Impact game\GenshinImpact.exe"
+                    await message.answer(f'{bot_name}: Будет открыт лаунчер игры^^')
+                    path_to_exe = r"Q:\HoYoPlay\launcher.exe"
                     # Запуск исполняемого файла
                     subprocess.run([path_to_exe])
                 break  # Прерываем цикл после обработки нужного тега
@@ -81,47 +81,79 @@ async def echo(message: Message):
                 intent_responses = intent.get('responses', [])  # Получаем список ответов
                 if intent_responses:
                     await message.answer(f'{bot_name}: {random.choice(intent_responses)}')
-                    path_to_exe = r"closeGenshin.exe"
+                    process_name = 'GenshinImpact.exe'
+                    process_name1 = "HYP.exe"
+                    # Завершение процесса
+                    subprocess.run(['taskkill', '/F', '/IM', process_name])
+                    subprocess.run(['taskkill', '/F', '/IM', process_name1])
+                break  # Прерываем цикл после обработки нужного тега
+    if intent_tag == "launchzzz":  # Проверяем, соответствует ли тег нужному
+        # Находим соответствующий intent в intents
+        for intent in intents['intents']:
+            if intent['tag'] == intent_tag:
+                intent_responses = intent.get('responses', [])  # Получаем список ответов
+                if intent_responses:
+                    await message.answer(f'{bot_name}: {random.choice(intent_responses)}')
+                    await message.answer(f'{bot_name}: Будет открыт лаунчер игры^^')
+                    path_to_exe = r"Q:\HoYoPlay\launcher.exe"
                     # Запуск исполняемого файла
                     subprocess.run([path_to_exe])
                 break  # Прерываем цикл после обработки нужного тега
+    if intent_tag == "closezzz":  # Проверяем, соответствует ли тег нужному
+        # Находим соответствующий intent в intents
+        for intent in intents['intents']:
+            if intent['tag'] == intent_tag:
+                intent_responses = intent.get('responses', [])  # Получаем список ответов
+                if intent_responses:
+                    await message.answer(f'{bot_name}: {random.choice(intent_responses)}')
+                    process_name = 'ZenlessZoneZero.exe'
+                    process_name1 = "HYP.exe"
+                    # Завершение процесса
+                    subprocess.run(['taskkill', '/F', '/IM', process_name])
+                    subprocess.run(['taskkill', '/F', '/IM', process_name1])
+                break  # Прерываем цикл после обработки нужного тега
+    
+
+
+    if intent_tag == "spotify":  # Проверяем, соответствует ли тег нужному
+        # Находим соответствующий intent в intents
+        for intent in intents['intents']:
+            if intent['tag'] == intent_tag:
+                intent_responses = intent.get('responses', [])  # Получаем список ответов
+                if intent_responses:
+                    await message.answer(f'{bot_name}: {random.choice(intent_responses)}')
+                    path_to_exe = r"C:\Users\fgrls\AppData\Local\Microsoft\WindowsApps\Spotify.exe"
+                    # Запуск исполняемого файла
+                    subprocess.run([path_to_exe])
+                break  # Прерываем цикл после обработки нужного тега
+    if intent_tag == "closespotify":  # Проверяем, соответствует ли тег нужному
+        # Находим соответствующий intent в intents
+        for intent in intents['intents']:
+            if intent['tag'] == intent_tag:
+                intent_responses = intent.get('responses', [])  # Получаем список ответов
+                if intent_responses:
+                    await message.answer(f'{bot_name}: {random.choice(intent_responses)}')
+                    process_name = 'Spotify.exe'
+                    # Завершение процесса
+                    subprocess.run(['taskkill', '/F', '/IM', process_name])
+                break  # Прерываем цикл после обработки нужного тега
+
+
+
+
+    #else:
+        #await message.answer(f'{bot_name}: Не могу понять что ты хочешь от меня')
+
+         
     else:
-        await message.answer(f'{bot_name}: Не могу понять что ты хочешь от меня')
-
-
-
-
-
-
-
-    #        if tag == "closegenshin":
-    #            await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
-    #            path_to_exe = r"closeGenshin.exe"
-    #            subprocess.run([path_to_exe])
-    #        if tag == "launchzzz":
-    #            await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
-    #            path_to_exe = r"V:\ZenlessZoneZero Game\ZenlessZoneZero.exe"
-    #            # Запуск исполняемого файла
-    #            subprocess.run([path_to_exe])
-    #        if tag == "closezzz":
-    #            await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
-    #            path_to_exe = r"closeZenlessZoneZero.exe"
-    #            subprocess.run([path_to_exe])
-    #        if tag == "spotify":
-    #            await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
-    #            path_to_exe = r"C:\Users\fgrls\AppData\Local\Microsoft\WindowsApps\Spotify.exe"
-    #            # Запуск исполняемого файла
-    #            subprocess.run([path_to_exe])
-    #        if tag == "closespotify":
-    #            await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
-    #            process_name = 'Spotify.exe'
-    #            # Завершение процесса
-    #            subprocess.run(['taskkill', '/F', '/IM', process_name])
-    #            
-    #            
-    #           
-    #        else:
-    #            await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
+        for intent in intents['intents']:
+            if intent['tag'] == intent_tag:
+                intent_responses = intent.get('responses', [])  # Получаем список ответов
+                if intent_responses:
+                    await message.answer(f'{bot_name}: {random.choice(intent_responses)}')
+                
+              # Прерываем цикл после обработки нужного тега
+      
     
         
 

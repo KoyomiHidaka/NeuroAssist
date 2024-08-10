@@ -2,7 +2,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Aiogram](https://img.shields.io/badge/Aiogram-2.x-brightgreen)
+![Aiogram](https://img.shields.io/badge/Aiogram-3.x-brightgreen)
 
 Neuro Assist Bot is an AI-powered Telegram bot built using PyTorch and Aiogram. It uses a neural network to understand and respond to user messages, including opening web pages when certain topics are mentioned.
 

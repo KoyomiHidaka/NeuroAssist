@@ -8,8 +8,6 @@ from model import NeuralNet
 from nltk_utils import bag_of_words, tokenize
 import subprocess, os, psutil
 dp = Dispatcher()
-
-
 async def echo(message: Message):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -83,28 +81,10 @@ async def echo(message: Message):
 
                     # Завершение процесса
                     subprocess.run(['taskkill', '/F', '/IM', process_name])
-                    
-                    
-                   
-                    
-                    
-                    
-                    
-
-
-
-
-
-
-
                 else:
                     await message.answer(f'{bot_name}: {random.choice(intent["responses"])}')
     if prob.item() < 0.75:
         await message.answer(f'{bot_name}: Не понимаю..............')
-
-
-
-
 #-----------------------------------------------------------------------------------------------------------------------------------------
 def reg_handler(dp):
     dp.message.register(echo)
